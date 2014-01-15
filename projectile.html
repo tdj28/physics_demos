@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+
+<title>Projectile Motion Infinite Worksheet</title>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+
+<style type="text/css">
+	body {background-color:#433; color:#ccc;} 
+	h4 {font-family: sans-serif; color:#555555; font-size:16px;}
+	h3 {font-family: sans-serif; color:#ccc; text-align:center;}
+	p {font-family: sans-serif; color:#888888; font-size:12px;text-align:left;}
+		#caption {position:absolute; width:1000px; text-align:center; top:500px; z-index:1}
+  	a {font-family: sans-serif; color:#d15423; text-decoration:none;}
+/*	canvas {}
+		#canvasOne {position:absolute; top:10px; z-index:0} */
+
+	div {}
+		#container {width:1300px;}
+
+                #leftmenu  {width:250px; float:left; margin-top:-10px; margin-left:5px; margin-right:5px;}
+                #rightmenu {width:0px; float:left; margin-left:10px;text-align:center;}
+                #tools p{font-family: sans-serif; color:#ccc; font-size:12px;text-align:center;}
+                #actionscreen {width:800px; float:left;margin-top:20px; margin-bottom:10px;}
+                #footer {width:1300px;color:#ccc;}
+                #footer p{font-family: sans-serif; font-size:10px;text-align:center;clear:both !important;}
+                #buttonWrapper {
+                   float: left;
+               
+                 }
+              
+                input[type =
+                  "button"] {
+                 padding: 5px;
+                 width: 120px;
+                 height: 35px;
+                 margin: 0px 0px 0px 0px;
+                 }
+       input[type="range"]:first-of-type {
+  width: 200px;
+}
+
+  
+</style>
+
+<!-- This is where the physics is ------------------------------------>
+
+<script>
+ window.requestAnimFrame = (function(callback){
+                return window.requestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame ||
+                window.oRequestAnimationFrame ||
+                window.msRequestAnimationFrame ||
+                function(callback){
+                    window.setTimeout(callback, 1000 / 60);
+                };
+            })();
+
+
+var goflag=false;
+var h = 0.01;  
+
+var g = 9.8;
+var xpos = 0;
+var ypos = 0;
+var time = 0;
+var maxy = 0;
+
+
+
+function animate()
+{
+    var canvas = document.getElementById("canvasvan");
+    var context = canvas.getContext("2d");
+   var canvas2 = document.getElementById("canvasvan2");
+    var context2 = canvas2.getContext("2d");
+
+   context.clearRect(0, 0, canvas.width, canvas.height);
+
+   if(goflag && xpos==0){context2.fillStyle = "rgba(68,51,51,0.7)"; context2.beginPath(); context2.rect(0, 0, canvas2.width, canvas2.height); context2.fill();context2.closePath;}
+  
+   context.fillStyle = "rgba(200,30,200,1)";
+   context2.fillStyle = "rgba(20,230,255,0.8)";
+
+    if(goflag)
+    {
+       
+       xpos = xpos + h*velx;
+       ypos = ypos + h*vely;
+       vely = vely - h*9.8;
+       time = time + h;
+   
+       if(ypos>maxy){maxy=ypos;}  
+
+       // end this loop and reset if goes beyond field
+       if(xpos<0){  window.goflag=false;}// xpos=0; ypos=0;}
+       if(ypos<0){ window.goflag=false;} // xpos=0; ypos=0;}
+
+
+       context.beginPath();
+       context2.beginPath();
+       context.arc((xpos*800/1025), 500-(ypos*800/1025),8,Math.PI*2,false);
+       context2.arc((xpos*800/1025), 500-(ypos*800/1025)-2,5,Math.PI*2,false);
+       context.fill();
+       context2.fill();
+		   
+     context.closePath;
+     context2.closePath;
+
+
+       document.getElementById("pos").innerHTML="angle = "+theta2+", v_i = "+vel2+" m/s, initial y = "+window.cliffv+", final x = "+xpos.toFixed(0)+" m, max y = "+maxy.toFixed(0)+" m, <br> time = "+time.toFixed(1)+" s";
+     }
+
+
+    context.font = "20px sans-serif"
+     context.fillText("x = "+xpos.toFixed(0)+" m", 35, 35);
+     context.fillText("y = "+ypos.toFixed(0)+" m", 235, 35);
+     context.fillText("time = "+time.toFixed(1)+" s",435,35);
+     context.fillText("max y = "+maxy.toFixed(0)+" m",635,35);
+  requestAnimFrame(function(){
+                    animate();
+                });
+  
+}
+
+window.onload = function(){
+          
+    document.getElementById("pause").addEventListener("click", function(){
+        window.goflag=false;
+        
+    }, false);
+ 
+  document.getElementById("resume").addEventListener("click", function(){
+        window.goflag=true;
+        
+         window.theta2 = document.getElementById("theta").value;
+         window.vel2 = document.getElementById("vel").value;
+         window.cliffv = document.getElementById("cliff").value;	   
+         window.angle = window.theta2 * Math.PI/180;
+         window.cos = Math.cos(window.angle);
+         window.sin = Math.sin(window.angle);
+         window.velx = window.vel2*cos;
+         window.vely = window.vel2*sin;
+         window.time = 0;
+         window.xpos = 0;
+         window.ypos = window.cliffv*1.0;
+         window.maxy=0;
+
+    }, false);
+
+   
+    animate();
+
+};
+
+</script>
+
+<!--- End of physics ---------------------------------------------->
+
+</head>
+<body>
+
+<div id="container"> 
+     <div id="leftmenu">
+<h1>Projectile Motion</h1>
+
+<p>
+<h3>Choose an angle:</h3>
+0<input id="theta" type="range" min="0" max="90" value="45" step="1" onchange="showValue1(theta.value)" style="position:relative; width:200px; height:20px; border:1px solid #cccccc;"/>90
+<br><br>
+Angle $\theta$: <span id="ttheta">45 degrees</span>
+<script type="text/javascript">
+function showValue1(newValue)
+{
+	document.getElementById("ttheta").innerHTML=newValue+" degrees";
+
+}
+</script>
+
+
+<h3>Choose a velocity:</h3>
+30<input id="vel" type="range" min="30" max="100" value="70" step="1" onchange="showValue2(vel.value)" style="position:relative; width:200px; height:20px; border:1px solid #cccccc;" />100
+<br><br>
+Velocity $v$: <span id="vvel">70 m/s</span>
+<script type="text/javascript">
+function showValue2(newValue2)
+{
+	document.getElementById("vvel").innerHTML=newValue2+" m/s";
+
+}
+</script>
+<br>
+<h3>Cliff height:</h3>
+0<input id="cliff" type="range" min="0" max="400" value="0" step="1" onchange="showValue3(cliff.value)" style="position:relative; width:200px; height:20px; border:1px solid #cccccc;" />400
+<br><br>
+Cliff height: <span id="ccliff">0 m</span>
+<script type="text/javascript">
+function showValue3(newValue3)
+{
+	document.getElementById("ccliff").innerHTML=newValue3+" m";
+
+}
+</script>
+
+<!--Cliff height: <input type="text" value="5" id="cliff" name="cliff"><br>-->
+
+<br><br>
+<input type="button" id="resume" value="Go"> 
+<input type="button" id="pause" value="Stop"><br><br>
+
+
+<div id="pos"></div>
+
+</p>
+
+</div>
+
+ <div id="actionscreen">   
+
+ <canvas id="canvasvan" style="position: absolute; left:250; top: 100; z-index:1" width="800px" height="500px"></canvas>
+    <canvas id="canvasvan2" style="border: 1px solid #fff; position: absolute; left:250; top: 100; z-index:0" width="800px" height="500px">
+     
+        Your browser does not support HTML5 canvas.
+    </canvas>
+
+    </div>
+
+</div>
+
+</body>
+
